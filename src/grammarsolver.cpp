@@ -12,6 +12,7 @@
 using namespace std;
 string  removeSpaces(string str);
 string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rt);
+Vector<string> constructterminals(string st);
 /**
  * Generates grammar for a given symbol a certain number of times given
  * a BNF input file.
@@ -28,7 +29,6 @@ Vector<string> grammarGenerate(istream& input, string symbol, int times) {
     Map<string,Vector<Vector<string>>> rulesTable;
     Vector<Vector<string>> _rules;
     Vector<string> vstr;
-
     while (true) {
     string line;
     getline(input,line);
@@ -37,43 +37,38 @@ Vector<string> grammarGenerate(istream& input, string symbol, int times) {
     string key = v1.front();
     string value = v1.back();
     Vector<string> rules = stringSplit(value,"|");
+    Vector<Vector<string>> result;
     for (string se: rules) {
         _rules.add(stringSplit(se, " "));
     }
     rulesTable.put(key,_rules);
     _rules.clear();
     }
+   // string o=rulesTable.toString();
+    //cout << rulesTable.toString();
+    int n=0;
     for (int i=0; i<times; i++){
         vstr.add(generateGrammar(symbol, rulesTable));
     }
-
     return vstr;           // This is only here so it will compile
 }
- string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rt){
+ string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rtable){
 
-    if (!rt.containsKey(s)) {return s;}
-        int r=randomInteger(0,rt.get(s).size());
-        /*for (string st: rt.get(s).get(r))*/
-        for (int i=0; i<(rt.get(s).get(r)).size(); i++){
-            string strng=rt.get(s).get(r).get(i);
-            return generateGrammar(strng,rt);
+        if (!rtable.containsKey(s)) {return s;}
+        int r=randomInteger(0,rtable.get(s).size()-1);
+        string str;
+        string result;
+        for (int i=0; i<(rtable.get(s).get(r)).size(); i++){
+            cout << i <<endl;
+            str=rtable.get(s).get(r).get(i);
+            result+=generateGrammar(str,rtable)+"";
+
         }
 
-        return "";//for (Vector<string> vs : rt.get(s)){}
+        return result;
     }
 
 
 
 
-//string  removeSpaces(string str)
-//{
 
-//    int j=0;
-//    string s;
-//    for(int i=0;i<str.length();i++)
-//        if(str[i]!=' ')
-//         s.push_back(str[i]);
-
-
-//    return s;
-//}
