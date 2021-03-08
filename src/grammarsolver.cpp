@@ -37,7 +37,7 @@ Vector<string> grammarGenerate(istream& input, string symbol, int times) {
 
 Map<string, Vector<Vector<string>>> ReadInptAndFillInRulesTable(istream& input){
     Map<string,Vector<Vector<string>>> _rulesTable;
-    Vector<Vector<string>> _rules;
+    Vector<Vector<std::string>> _rules;
     while (true) {
     string line;
     getline(input,line);
@@ -46,8 +46,8 @@ Map<string, Vector<Vector<string>>> ReadInptAndFillInRulesTable(istream& input){
     string key = v1.front();
     string value = v1.back();
     Vector<string> rules = stringSplit(value,"|");
-    Vector<Vector<string>> result;
     for (string se: rules) {
+        se=trim(se);
         _rules.add(stringSplit(se, " "));
     }
     _rulesTable.put(key,_rules);
@@ -65,7 +65,7 @@ string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rtable){
         for (int i=0; i<(rtable.get(s).get(r)).size(); i++){
            // cout << i <<endl;
             str=rtable.get(s).get(r).get(i);
-            result+=generateGrammar(str,rtable)+" ";
+            result+=trim(generateGrammar(str,rtable))+" ";
         }
         return result;
     }
