@@ -13,6 +13,7 @@ using namespace std;
 string  removeSpaces(string str);
 string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rt);
 Vector<string> constructterminals(string st);
+Map<string, Vector<Vector<string>>> ReadInptAndFillInRulesTable(istream& input);
 /**
  * Generates grammar for a given symbol a certain number of times given
  * a BNF input file.
@@ -25,10 +26,18 @@ Vector<string> constructterminals(string st);
  * @return Vector of strings of size times with random generations of symbol
  */
 Vector<string> grammarGenerate(istream& input, string symbol, int times) {
-    // TODO: write this function
-    Map<string,Vector<Vector<string>>> rulesTable;
-    Vector<Vector<string>> _rules;
     Vector<string> vstr;
+    Map<string,Vector<Vector<string>>> rulesTable;
+    rulesTable=ReadInptAndFillInRulesTable(input);
+    for (int i=0; i<times; i++){
+        vstr.add(generateGrammar(symbol, rulesTable));
+    }
+    return vstr;
+}
+
+Map<string, Vector<Vector<string>>> ReadInptAndFillInRulesTable(istream& input){
+    Map<string,Vector<Vector<string>>> _rulesTable;
+    Vector<Vector<string>> _rules;
     while (true) {
     string line;
     getline(input,line);
@@ -41,30 +50,23 @@ Vector<string> grammarGenerate(istream& input, string symbol, int times) {
     for (string se: rules) {
         _rules.add(stringSplit(se, " "));
     }
-    rulesTable.put(key,_rules);
+    _rulesTable.put(key,_rules);
     _rules.clear();
     }
-   // string o=rulesTable.toString();
-    //cout << rulesTable.toString();
-    int n=0;
-    for (int i=0; i<times; i++){
-        vstr.add(generateGrammar(symbol, rulesTable));
-    }
-    return vstr;           // This is only here so it will compile
+    return _rulesTable;
 }
- string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rtable){
+
+string generateGrammar(string &s, Map<string,Vector<Vector<string>>> &rtable){
 
         if (!rtable.containsKey(s)) {return s;}
         int r=randomInteger(0,rtable.get(s).size()-1);
         string str;
         string result;
         for (int i=0; i<(rtable.get(s).get(r)).size(); i++){
-            cout << i <<endl;
+           // cout << i <<endl;
             str=rtable.get(s).get(r).get(i);
-            result+=generateGrammar(str,rtable)+"";
-
+            result+=generateGrammar(str,rtable)+" ";
         }
-
         return result;
     }
 
